@@ -1,250 +1,705 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
     <title>GamifyLife - Habit Tracker</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💎</text></svg>">
-</head>
-<body>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="manifest" href="manifest.json" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💎</text></svg>"
+    />
+  </head>
+  <body>
+    <!-- Animated Background -->
+    <div class="animated-bg"></div>
+    <div class="particles-container" id="particles"></div>
+
     <!-- App Container -->
     <div class="app-container">
-        <!-- Header with Gems -->
-        <header class="app-header">
-            <div class="gem-display">
+      <!-- Header with Gems & Dark Mode -->
+      <header class="app-header">
+        <div class="header-left">
+          <button class="btn-icon menu-btn" id="menuBtn">
+            <i class="fas fa-bars"></i>
+          </button>
+          <div class="gem-display">
+            <i class="fas fa-gem pulse"></i>
+            <span id="totalGems">0</span>
+          </div>
+        </div>
+
+        <div class="logo">
+          <div class="logo-icon">
+            <i class="fas fa-crown"></i>
+          </div>
+          <h1>Gamify<span>Life</span></h1>
+        </div>
+
+        <div class="header-right">
+          <button class="btn-icon theme-toggle" id="themeToggle">
+            <i class="fas fa-moon"></i>
+          </button>
+          <button class="btn-icon" id="settingsBtn">
+            <i class="fas fa-user"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- Stats Bar -->
+      <div class="stats-bar">
+        <div class="stat">
+          <div class="stat-icon">
+            <i class="fas fa-fire"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-value" id="currentStreak">0</span>
+            <span class="stat-label">Streak</span>
+          </div>
+        </div>
+        <div class="stat">
+          <div class="stat-icon">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-value" id="todayProgress">0/0</span>
+            <span class="stat-label">Today</span>
+          </div>
+        </div>
+        <div class="stat">
+          <div class="stat-icon">
+            <i class="fas fa-trophy"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-value" id="userLevel">1</span>
+            <span class="stat-label">Level</span>
+          </div>
+        </div>
+        <div class="stat">
+          <div class="stat-icon">
+            <i class="fas fa-star"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-value" id="xpCount">0</span>
+            <span class="stat-label">XP</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Navigation -->
+      <nav class="main-nav">
+        <button class="nav-btn active" data-view="dashboard">
+          <div class="nav-icon">
+            <i class="fas fa-home"></i>
+          </div>
+          <span class="nav-label">Dashboard</span>
+        </button>
+        <button class="nav-btn" data-view="habits">
+          <div class="nav-icon">
+            <i class="fas fa-tasks"></i>
+          </div>
+          <span class="nav-label">Habits</span>
+        </button>
+        <button class="nav-btn" data-view="rewards">
+          <div class="nav-icon">
+            <i class="fas fa-gift"></i>
+          </div>
+          <span class="nav-label">Rewards</span>
+        </button>
+        <button class="nav-btn" data-view="punishments">
+          <div class="nav-icon">
+            <i class="fas fa-dumbbell"></i>
+          </div>
+          <span class="nav-label">Workouts</span>
+        </button>
+        <button class="nav-btn" data-view="profile">
+          <div class="nav-icon">
+            <i class="fas fa-chart-pie"></i>
+          </div>
+          <span class="nav-label">Stats</span>
+        </button>
+      </nav>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <!-- Dashboard View -->
+        <section id="dashboard" class="view active">
+          <div class="section-header">
+            <h2 class="section-title">
+              <i class="fas fa-home"></i>
+              Today's Journey
+            </h2>
+            <div class="date-display" id="currentDate"></div>
+          </div>
+
+          <div class="motivation-card">
+            <div class="motivation-content">
+              <div class="motivation-icon">
+                <i class="fas fa-quote-left"></i>
+              </div>
+              <p id="motivationText">
+                Every small step counts! Complete habits to earn gems!
+              </p>
+              <div class="motivation-author">— Your Future Self</div>
+            </div>
+            <div class="motivation-actions">
+              <button class="btn-small" id="refreshMotivation">
+                <i class="fas fa-redo"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="habits-quick">
+            <div class="section-subheader">
+              <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+              <span class="badge" id="pendingCount">0 pending</span>
+            </div>
+            <div id="todayHabitsList" class="habits-list compact"></div>
+          </div>
+
+          <div class="achievement-preview">
+            <div class="section-subheader">
+              <h3><i class="fas fa-medal"></i> Recent Achievements</h3>
+            </div>
+            <div class="achievements-grid" id="achievementsList">
+              <!-- Will be populated by JS -->
+            </div>
+          </div>
+        </section>
+
+        <!-- Habits View -->
+        <section id="habits" class="view">
+          <div class="section-header">
+            <h2 class="section-title">
+              <i class="fas fa-tasks"></i>
+              Your Habits
+            </h2>
+            <button class="btn-add" id="addHabitBtn">
+              <i class="fas fa-plus"></i>
+              <span>New Habit</span>
+            </button>
+          </div>
+
+          <div class="category-filter">
+            <button class="category-btn active" data-category="all">
+              <i class="fas fa-layer-group"></i> All
+            </button>
+            <button class="category-btn" data-category="health">
+              <i class="fas fa-heartbeat"></i> Health
+            </button>
+            <button class="category-btn" data-category="productivity">
+              <i class="fas fa-briefcase"></i> Work
+            </button>
+            <button class="category-btn" data-category="learning">
+              <i class="fas fa-graduation-cap"></i> Learning
+            </button>
+            <button class="category-btn" data-category="fitness">
+              <i class="fas fa-running"></i> Fitness
+            </button>
+          </div>
+
+          <div class="difficulty-filter">
+            <div class="filter-label">Filter by difficulty:</div>
+            <div class="difficulty-buttons">
+              <button class="difficulty-btn active" data-difficulty="all">
+                All
+              </button>
+              <button class="difficulty-btn easy" data-difficulty="easy">
+                Easy
+              </button>
+              <button class="difficulty-btn medium" data-difficulty="medium">
+                Medium
+              </button>
+              <button class="difficulty-btn hard" data-difficulty="hard">
+                Hard
+              </button>
+            </div>
+          </div>
+
+          <div id="habitsList" class="habits-grid"></div>
+        </section>
+
+        <!-- Rewards View -->
+        <section id="rewards" class="view">
+          <div class="section-header">
+            <h2 class="section-title">
+              <i class="fas fa-gift"></i>
+              Treasure Chest
+            </h2>
+            <button class="btn-add" id="addRewardBtn">
+              <i class="fas fa-plus"></i>
+              <span>New Reward</span>
+            </button>
+          </div>
+
+          <div class="shop-header">
+            <div class="shop-info">
+              <h3>Your Reward Shop</h3>
+              <p>Redeem your hard-earned gems for amazing rewards!</p>
+            </div>
+            <div class="shop-stats">
+              <div class="shop-stat">
+                <span class="shop-stat-value" id="availableGems">0</span>
+                <span class="shop-stat-label">Gems Available</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="rewards-categories">
+            <button class="reward-category-btn active" data-category="all">
+              All Rewards
+            </button>
+            <button class="reward-category-btn" data-category="cheap">
+              Under 50 gems
+            </button>
+            <button class="reward-category-btn" data-category="medium">
+              50-150 gems
+            </button>
+            <button class="reward-category-btn" data-category="expensive">
+              Premium
+            </button>
+          </div>
+
+          <div id="rewardsList" class="rewards-grid"></div>
+
+          <div class="shop-footer">
+            <p>🎯 Pro tip: Complete daily streaks for bonus gems!</p>
+          </div>
+        </section>
+
+        <!-- Punishments View -->
+        <section id="punishments" class="view">
+          <div class="section-header">
+            <h2 class="section-title">
+              <i class="fas fa-dumbbell"></i>
+              Challenge Arena
+            </h2>
+            <button class="btn-add" id="addPunishmentBtn">
+              <i class="fas fa-plus"></i>
+              <span>New Workout</span>
+            </button>
+          </div>
+
+          <div class="arena-container">
+            <div class="arena-header">
+              <div class="arena-info">
+                <h3>Battle Your Failures</h3>
+                <p>
+                  Failed habits become workout challenges. Complete them to grow
+                  stronger!
+                </p>
+              </div>
+              <div class="arena-badge">
+                <i class="fas fa-shield-alt"></i>
+                <span id="pendingWorkoutsCount">0 Pending</span>
+              </div>
+            </div>
+
+            <div class="workout-stats">
+              <div class="workout-stat">
+                <i class="fas fa-fire"></i>
+                <span
+                  >Workouts Completed:
+                  <strong id="completedWorkouts">0</strong></span
+                >
+              </div>
+              <div class="workout-stat">
                 <i class="fas fa-gem"></i>
-                <span id="totalGems">0</span> Gems
+                <span>Gems Lost: <strong id="totalGemsLost">0</strong></span>
+              </div>
             </div>
-            <h1>GamifyLife</h1>
-            <button class="btn-icon" id="settingsBtn">
-                <i class="fas fa-cog"></i>
-            </button>
-        </header>
 
-        <!-- Main Navigation -->
-        <nav class="main-nav">
-            <button class="nav-btn active" data-view="dashboard">
-                <i class="fas fa-home"></i>
-                <span>Dashboard</span>
-            </button>
-            <button class="nav-btn" data-view="habits">
-                <i class="fas fa-tasks"></i>
-                <span>Habits</span>
-            </button>
-            <button class="nav-btn" data-view="rewards">
-                <i class="fas fa-gift"></i>
-                <span>Rewards</span>
-            </button>
-            <button class="nav-btn" data-view="punishments">
-                <i class="fas fa-dumbbell"></i>
-                <span>Workouts</span>
-            </button>
-        </nav>
+            <div class="challenges-section">
+              <h4><i class="fas fa-skull-crossbones"></i> Active Challenges</h4>
+              <div id="pendingWorkouts" class="challenges-list"></div>
+            </div>
 
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Dashboard View -->
-            <section id="dashboard" class="view active">
-                <div class="stats-container">
-                    <div class="stat-card">
-                        <i class="fas fa-fire"></i>
-                        <h3>Current Streak</h3>
-                        <p id="currentStreak">0 days</p>
-                    </div>
-                    <div class="stat-card">
-                        <i class="fas fa-calendar-check"></i>
-                        <h3>Today's Progress</h3>
-                        <p id="todayProgress">0/0</p>
-                    </div>
-                    <div class="stat-card">
-                        <i class="fas fa-trophy"></i>
-                        <h3>Level</h3>
-                        <p id="userLevel">1</p>
-                    </div>
-                </div>
+            <div class="workout-library">
+              <h4><i class="fas fa-dumbbell"></i> Workout Library</h4>
+              <div id="punishmentsList" class="workout-grid"></div>
+            </div>
+          </div>
+        </section>
 
-                <div class="today-habits">
-                    <h2>Today's Habits</h2>
-                    <div id="todayHabitsList" class="habits-list"></div>
-                </div>
+        <!-- Profile/Stats View -->
+        <section id="profile" class="view">
+          <div class="profile-header">
+            <div class="profile-avatar">
+              <div class="avatar-circle">
+                <span id="avatarInitial">U</span>
+              </div>
+              <div class="level-badge">
+                Lvl <span id="profileLevel">1</span>
+              </div>
+            </div>
+            <div class="profile-info">
+              <h2 id="userName">User</h2>
+              <p class="profile-tagline" id="userTitle">Habit Warrior</p>
+            </div>
+          </div>
 
-                <div class="motivation-box">
-                    <p id="motivationText">Every small step counts! Complete habits to earn gems!</p>
+          <div class="profile-stats">
+            <div class="stat-card">
+              <div class="stat-card-icon">
+                <i class="fas fa-calendar-check"></i>
+              </div>
+              <div class="stat-card-content">
+                <h3>Completion Rate</h3>
+                <div class="stat-progress">
+                  <div class="progress-bar">
+                    <div
+                      class="progress-fill"
+                      id="completionRate"
+                      style="width: 0%"
+                    ></div>
+                  </div>
+                  <span class="stat-value">0%</span>
                 </div>
-            </section>
+              </div>
+            </div>
 
-            <!-- Habits View -->
-            <section id="habits" class="view">
-                <div class="section-header">
-                    <h2>Your Habits</h2>
-                    <button class="btn-primary" id="addHabitBtn">
-                        <i class="fas fa-plus"></i> Add Habit
-                    </button>
+            <div class="stat-card">
+              <div class="stat-card-icon">
+                <i class="fas fa-gem"></i>
+              </div>
+              <div class="stat-card-content">
+                <h3>Total Gems Earned</h3>
+                <div class="stat-big-value" id="totalGemsEarned">0</div>
+                <div class="stat-trend">
+                  <i class="fas fa-arrow-up"></i>
+                  <span>0 this week</span>
                 </div>
-                <div class="filter-buttons">
-                    <button class="filter-btn active" data-filter="all">All</button>
-                    <button class="filter-btn" data-filter="easy">Easy</button>
-                    <button class="filter-btn" data-filter="medium">Medium</button>
-                    <button class="filter-btn" data-filter="hard">Hard</button>
-                </div>
-                <div id="habitsList" class="habits-list"></div>
-            </section>
+              </div>
+            </div>
 
-            <!-- Rewards View -->
-            <section id="rewards" class="view">
-                <div class="section-header">
-                    <h2>Reward Shop</h2>
-                    <button class="btn-primary" id="addRewardBtn">
-                        <i class="fas fa-plus"></i> Add Reward
-                    </button>
+            <div class="stats-grid">
+              <div class="mini-stat">
+                <i class="fas fa-check-circle"></i>
+                <div>
+                  <div class="mini-stat-value" id="totalCompletions">0</div>
+                  <div class="mini-stat-label">Completed</div>
                 </div>
-                <div class="redeem-info">
-                    <p>Redeem your gems for rewards you enjoy!</p>
+              </div>
+              <div class="mini-stat">
+                <i class="fas fa-times-circle"></i>
+                <div>
+                  <div class="mini-stat-value" id="totalFails">0</div>
+                  <div class="mini-stat-label">Failed</div>
                 </div>
-                <div id="rewardsList" class="rewards-list"></div>
-            </section>
+              </div>
+              <div class="mini-stat">
+                <i class="fas fa-clock"></i>
+                <div>
+                  <div class="mini-stat-value" id="currentStreakStats">0</div>
+                  <div class="mini-stat-label">Day Streak</div>
+                </div>
+              </div>
+              <div class="mini-stat">
+                <i class="fas fa-trophy"></i>
+                <div>
+                  <div class="mini-stat-value" id="achievementsCount">0</div>
+                  <div class="mini-stat-label">Achievements</div>
+                </div>
+              </div>
+            </div>
+          </div>
 
-            <!-- Punishments View -->
-            <section id="punishments" class="view">
-                <div class="section-header">
-                    <h2>Workout Punishments</h2>
-                    <button class="btn-primary" id="addPunishmentBtn">
-                        <i class="fas fa-plus"></i> Add Workout
-                    </button>
-                </div>
-                <div class="punishment-info">
-                    <p>Failed habits trigger random workout punishments</p>
-                </div>
-                <div id="punishmentsList" class="punishments-list"></div>
-                <div class="pending-punishments">
-                    <h3>Pending Workouts</h3>
-                    <div id="pendingWorkouts"></div>
-                </div>
-            </section>
-        </main>
+          <div class="habits-chart">
+            <h3>Weekly Progress</h3>
+            <canvas id="progressChart"></canvas>
+          </div>
+        </section>
+      </main>
+
+      <!-- Add Habit Floating Button -->
+      <button class="fab" id="quickAddBtn">
+        <i class="fas fa-plus"></i>
+      </button>
+
+      <!-- Side Menu -->
+      <div class="side-menu" id="sideMenu">
+        <div class="menu-header">
+          <div class="menu-user">
+            <div class="menu-avatar">
+              <i class="fas fa-user"></i>
+            </div>
+            <div>
+              <h3 id="menuUserName">User</h3>
+              <p class="menu-user-level">
+                Level <span id="menuUserLevel">1</span>
+              </p>
+            </div>
+          </div>
+          <button class="btn-icon menu-close" id="menuCloseBtn">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="menu-content">
+          <a href="#" class="menu-item" data-view="dashboard">
+            <i class="fas fa-home"></i>
+            <span>Dashboard</span>
+          </a>
+          <a href="#" class="menu-item" data-view="profile">
+            <i class="fas fa-chart-pie"></i>
+            <span>Statistics</span>
+          </a>
+          <a href="#" class="menu-item">
+            <i class="fas fa-award"></i>
+            <span>Achievements</span>
+            <span class="menu-badge">3</span>
+          </a>
+          <a href="#" class="menu-item">
+            <i class="fas fa-cog"></i>
+            <span>Settings</span>
+          </a>
+          <a href="#" class="menu-item">
+            <i class="fas fa-question-circle"></i>
+            <span>Help & Support</span>
+          </a>
+          <div class="menu-divider"></div>
+          <a href="#" class="menu-item" id="exportDataBtn">
+            <i class="fas fa-download"></i>
+            <span>Export Data</span>
+          </a>
+          <a href="#" class="menu-item" id="resetDataBtn">
+            <i class="fas fa-trash"></i>
+            <span>Reset Data</span>
+          </a>
+        </div>
+        <div class="menu-footer">
+          <button class="btn-secondary full-width" id="logoutBtn">
+            <i class="fas fa-sign-out-alt"></i>
+            Logout
+          </button>
+        </div>
+      </div>
     </div>
 
-    <!-- Modals -->
+    <!-- Modals (Enhanced) -->
     <div id="habitModal" class="modal">
-        <div class="modal-content">
-            <h2 id="habitModalTitle">Add New Habit</h2>
-            <form id="habitForm">
-                <div class="form-group">
-                    <label for="habitName">Habit Name</label>
-                    <input type="text" id="habitName" required placeholder="e.g., Drink 8 glasses of water">
-                </div>
-                <div class="form-group">
-                    <label for="habitCategory">Category</label>
-                    <select id="habitCategory" required>
-                        <option value="health">Health</option>
-                        <option value="fitness">Fitness</option>
-                        <option value="learning">Learning</option>
-                        <option value="productivity">Productivity</option>
-                        <option value="mindfulness">Mindfulness</option>
-                        <option value="other">Other</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="habitDifficulty">Difficulty Level</label>
-                    <select id="habitDifficulty" required>
-                        <option value="easy">Easy (5 gems)</option>
-                        <option value="medium">Medium (10 gems)</option>
-                        <option value="hard">Hard (20 gems)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="habitImportance">Importance (1-5)</label>
-                    <input type="range" id="habitImportance" min="1" max="5" value="3">
-                    <div class="importance-display">
-                        <span class="star">☆</span>
-                        <span class="star">☆</span>
-                        <span class="star">☆</span>
-                        <span class="star">☆</span>
-                        <span class="star">☆</span>
-                    </div>
-                </div>
-                <div class="modal-buttons">
-                    <button type="button" class="btn-secondary" id="cancelHabitBtn">Cancel</button>
-                    <button type="submit" class="btn-primary">Save Habit</button>
-                </div>
-            </form>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2><i class="fas fa-plus-circle"></i> Create New Habit</h2>
+          <button class="btn-icon modal-close" id="cancelHabitBtn">
+            <i class="fas fa-times"></i>
+          </button>
         </div>
-    </div>
+        <form id="habitForm" class="modal-form">
+          <div class="form-group">
+            <label for="habitName">
+              <i class="fas fa-pencil-alt"></i> Habit Name
+            </label>
+            <input
+              type="text"
+              id="habitName"
+              required
+              placeholder="What do you want to accomplish?"
+            />
+          </div>
 
-    <div id="rewardModal" class="modal">
-        <div class="modal-content">
-            <h2>Add Reward</h2>
-            <form id="rewardForm">
-                <div class="form-group">
-                    <label for="rewardName">Reward Name</label>
-                    <input type="text" id="rewardName" required placeholder="e.g., Watch a movie">
-                </div>
-                <div class="form-group">
-                    <label for="rewardCost">Gems Cost</label>
-                    <input type="number" id="rewardCost" min="10" max="1000" value="50" required>
-                </div>
-                <div class="form-group">
-                    <label for="rewardDescription">Description</label>
-                    <textarea id="rewardDescription" rows="3" placeholder="Describe your reward..."></textarea>
-                </div>
-                <div class="modal-buttons">
-                    <button type="button" class="btn-secondary" id="cancelRewardBtn">Cancel</button>
-                    <button type="submit" class="btn-primary">Save Reward</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div id="punishmentModal" class="modal">
-        <div class="modal-content">
-            <h2>Add Workout Punishment</h2>
-            <form id="punishmentForm">
-                <div class="form-group">
-                    <label for="punishmentName">Workout Name</label>
-                    <input type="text" id="punishmentName" required placeholder="e.g., 20 Push-ups">
-                </div>
-                <div class="form-group">
-                    <label for="punishmentReps">Repetitions/Time</label>
-                    <input type="text" id="punishmentReps" required placeholder="e.g., 20 reps or 5 minutes">
-                </div>
-                <div class="form-group">
-                    <label for="punishmentGemLoss">Gems Loss</label>
-                    <input type="number" id="punishmentGemLoss" min="5" max="100" value="10" required>
-                </div>
-                <div class="form-group">
-                    <label for="punishmentDifficulty">Difficulty</label>
-                    <select id="punishmentDifficulty">
-                        <option value="easy">Easy</option>
-                        <option value="medium">Medium</option>
-                        <option value="hard">Hard</option>
-                    </select>
-                </div>
-                <div class="modal-buttons">
-                    <button type="button" class="btn-secondary" id="cancelPunishmentBtn">Cancel</button>
-                    <button type="submit" class="btn-primary">Save Workout</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Confirmation Modal -->
-    <div id="confirmModal" class="modal">
-        <div class="modal-content small">
-            <h3 id="confirmTitle">Confirm Action</h3>
-            <p id="confirmMessage">Are you sure?</p>
-            <div class="modal-buttons">
-                <button type="button" class="btn-secondary" id="confirmCancelBtn">Cancel</button>
-                <button type="button" class="btn-primary" id="confirmOkBtn">OK</button>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="habitCategory">
+                <i class="fas fa-tag"></i> Category
+              </label>
+              <div class="category-select">
+                <select id="habitCategory" required>
+                  <option value="health">🏥 Health & Wellness</option>
+                  <option value="fitness">💪 Fitness</option>
+                  <option value="learning">🎓 Learning</option>
+                  <option value="productivity">⚡ Productivity</option>
+                  <option value="mindfulness">🧘 Mindfulness</option>
+                  <option value="finance">💰 Finance</option>
+                  <option value="social">👥 Social</option>
+                  <option value="creative">🎨 Creative</option>
+                </select>
+              </div>
             </div>
-        </div>
+
+            <div class="form-group">
+              <label for="habitDifficulty">
+                <i class="fas fa-mountain"></i> Difficulty
+              </label>
+              <div class="difficulty-select">
+                <select id="habitDifficulty" required>
+                  <option value="easy">🟢 Easy (5 gems)</option>
+                  <option value="medium">🟡 Medium (10 gems)</option>
+                  <option value="hard">🔴 Hard (20 gems)</option>
+                  <option value="extreme">💀 Extreme (50 gems)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label> <i class="fas fa-star"></i> Importance </label>
+            <div class="importance-selector">
+              <div class="importance-label">
+                <span>Low</span>
+                <span>High</span>
+              </div>
+              <div class="importance-stars" id="importanceStars">
+                <div class="star" data-value="1">★</div>
+                <div class="star" data-value="2">★</div>
+                <div class="star" data-value="3">★</div>
+                <div class="star" data-value="4">★</div>
+                <div class="star" data-value="5">★</div>
+              </div>
+              <input type="hidden" id="habitImportance" value="3" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="habitSchedule">
+              <i class="fas fa-calendar-alt"></i> Schedule
+            </label>
+            <div class="schedule-select">
+              <select id="habitSchedule">
+                <option value="daily">Daily</option>
+                <option value="weekdays">Weekdays Only</option>
+                <option value="weekends">Weekends Only</option>
+                <option value="weekly">Weekly</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="habitReminder">
+              <i class="fas fa-bell"></i> Reminder
+            </label>
+            <div class="reminder-toggle">
+              <label class="switch">
+                <input type="checkbox" id="habitReminder" />
+                <span class="slider"></span>
+              </label>
+              <span class="reminder-label">Enable Daily Reminder</span>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn-outline" id="cancelHabitBtn2">
+              Cancel
+            </button>
+            <button type="submit" class="btn-primary">
+              <i class="fas fa-save"></i> Create Habit
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
 
-    <!-- Notification -->
-    <div id="notification" class="notification"></div>
+    <!-- Reward Modal -->
+    <div id="rewardModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2><i class="fas fa-gift"></i> Add New Reward</h2>
+          <button class="btn-icon modal-close" id="cancelRewardBtn">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <form id="rewardForm" class="modal-form">
+          <div class="form-group">
+            <label for="rewardName">
+              <i class="fas fa-tag"></i> Reward Name
+            </label>
+            <input
+              type="text"
+              id="rewardName"
+              required
+              placeholder="e.g., Movie Night, Fancy Dinner"
+            />
+          </div>
 
+          <div class="form-group">
+            <label for="rewardCost">
+              <i class="fas fa-gem"></i> Gem Cost
+            </label>
+            <div class="price-input">
+              <input
+                type="range"
+                id="rewardCostRange"
+                min="10"
+                max="500"
+                value="50"
+              />
+              <div class="price-display">
+                <span id="rewardCostDisplay">50</span>
+                <i class="fas fa-gem"></i>
+              </div>
+            </div>
+            <input type="hidden" id="rewardCost" value="50" />
+          </div>
+
+          <div class="form-group">
+            <label for="rewardCategory">
+              <i class="fas fa-filter"></i> Category
+            </label>
+            <div class="category-tags">
+              <div class="tag" data-category="entertainment">
+                🎬 Entertainment
+              </div>
+              <div class="tag" data-category="food">🍔 Food</div>
+              <div class="tag" data-category="shopping">🛍️ Shopping</div>
+              <div class="tag" data-category="experience">🎯 Experience</div>
+              <div class="tag" data-category="digital">💻 Digital</div>
+            </div>
+            <input type="hidden" id="rewardCategory" value="entertainment" />
+          </div>
+
+          <div class="form-group">
+            <label for="rewardDescription">
+              <i class="fas fa-align-left"></i> Description
+            </label>
+            <textarea
+              id="rewardDescription"
+              rows="3"
+              placeholder="What makes this reward special?"
+            ></textarea>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn-outline" id="cancelRewardBtn2">
+              Cancel
+            </button>
+            <button type="submit" class="btn-primary">
+              <i class="fas fa-save"></i> Add Reward
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Achievement Toast -->
+    <div class="toast" id="achievementToast">
+      <div class="toast-icon">
+        <i class="fas fa-trophy"></i>
+      </div>
+      <div class="toast-content">
+        <h4 class="toast-title">Achievement Unlocked!</h4>
+        <p class="toast-message">You've earned a new achievement!</p>
+      </div>
+    </div>
+
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+      <div class="loader">
+        <div class="loader-icon">
+          <i class="fas fa-gem"></i>
+        </div>
+        <div class="loader-text">GamifyLife</div>
+        <div class="loader-progress"></div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="script.js"></script>
-</body>
+  </body>
 </html>
