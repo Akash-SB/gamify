@@ -12,9 +12,10 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-    <link rel="manifest" href="manifest.json" />
+    <!-- REMOVED manifest.json to fix 404 error -->
     <link
       rel="icon"
+      type="image/x-icon"
       href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💎</text></svg>"
     />
   </head>
@@ -451,16 +452,16 @@
             <i class="fas fa-chart-pie"></i>
             <span>Statistics</span>
           </a>
-          <a href="#" class="menu-item">
+          <a href="#" class="menu-item" id="achievementsBtn">
             <i class="fas fa-award"></i>
             <span>Achievements</span>
             <span class="menu-badge">3</span>
           </a>
-          <a href="#" class="menu-item">
+          <a href="#" class="menu-item" id="settingsMenuBtn">
             <i class="fas fa-cog"></i>
             <span>Settings</span>
           </a>
-          <a href="#" class="menu-item">
+          <a href="#" class="menu-item" id="helpBtn">
             <i class="fas fa-question-circle"></i>
             <span>Help & Support</span>
           </a>
@@ -510,77 +511,46 @@
               <label for="habitCategory">
                 <i class="fas fa-tag"></i> Category
               </label>
-              <div class="category-select">
-                <select id="habitCategory" required>
-                  <option value="health">🏥 Health & Wellness</option>
-                  <option value="fitness">💪 Fitness</option>
-                  <option value="learning">🎓 Learning</option>
-                  <option value="productivity">⚡ Productivity</option>
-                  <option value="mindfulness">🧘 Mindfulness</option>
-                  <option value="finance">💰 Finance</option>
-                  <option value="social">👥 Social</option>
-                  <option value="creative">🎨 Creative</option>
-                </select>
-              </div>
+              <select id="habitCategory" required>
+                <option value="health">🏥 Health & Wellness</option>
+                <option value="fitness">💪 Fitness</option>
+                <option value="learning">🎓 Learning</option>
+                <option value="productivity">⚡ Productivity</option>
+                <option value="mindfulness">🧘 Mindfulness</option>
+                <option value="finance">💰 Finance</option>
+                <option value="social">👥 Social</option>
+                <option value="creative">🎨 Creative</option>
+              </select>
             </div>
 
             <div class="form-group">
               <label for="habitDifficulty">
                 <i class="fas fa-mountain"></i> Difficulty
               </label>
-              <div class="difficulty-select">
-                <select id="habitDifficulty" required>
-                  <option value="easy">🟢 Easy (5 gems)</option>
-                  <option value="medium">🟡 Medium (10 gems)</option>
-                  <option value="hard">🔴 Hard (20 gems)</option>
-                  <option value="extreme">💀 Extreme (50 gems)</option>
-                </select>
-              </div>
+              <select id="habitDifficulty" required>
+                <option value="easy">🟢 Easy (5 gems)</option>
+                <option value="medium">🟡 Medium (10 gems)</option>
+                <option value="hard">🔴 Hard (20 gems)</option>
+                <option value="extreme">💀 Extreme (50 gems)</option>
+              </select>
             </div>
           </div>
 
           <div class="form-group">
-            <label> <i class="fas fa-star"></i> Importance </label>
+            <label> <i class="fas fa-star"></i> Importance (1-5) </label>
             <div class="importance-selector">
               <div class="importance-label">
                 <span>Low</span>
                 <span>High</span>
               </div>
               <div class="importance-stars" id="importanceStars">
-                <div class="star" data-value="1">★</div>
-                <div class="star" data-value="2">★</div>
-                <div class="star" data-value="3">★</div>
-                <div class="star" data-value="4">★</div>
-                <div class="star" data-value="5">★</div>
+                <div class="star" data-value="1">☆</div>
+                <div class="star" data-value="2">☆</div>
+                <div class="star" data-value="3">☆</div>
+                <div class="star" data-value="4">☆</div>
+                <div class="star" data-value="5">☆</div>
               </div>
               <input type="hidden" id="habitImportance" value="3" />
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="habitSchedule">
-              <i class="fas fa-calendar-alt"></i> Schedule
-            </label>
-            <div class="schedule-select">
-              <select id="habitSchedule">
-                <option value="daily">Daily</option>
-                <option value="weekdays">Weekdays Only</option>
-                <option value="weekends">Weekends Only</option>
-                <option value="weekly">Weekly</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="habitReminder">
-              <i class="fas fa-bell"></i> Reminder
-            </label>
-            <div class="reminder-toggle">
-              <label class="switch">
-                <input type="checkbox" id="habitReminder" />
-                <span class="slider"></span>
-              </label>
-              <span class="reminder-label">Enable Daily Reminder</span>
             </div>
           </div>
 
@@ -639,22 +609,6 @@
           </div>
 
           <div class="form-group">
-            <label for="rewardCategory">
-              <i class="fas fa-filter"></i> Category
-            </label>
-            <div class="category-tags">
-              <div class="tag" data-category="entertainment">
-                🎬 Entertainment
-              </div>
-              <div class="tag" data-category="food">🍔 Food</div>
-              <div class="tag" data-category="shopping">🛍️ Shopping</div>
-              <div class="tag" data-category="experience">🎯 Experience</div>
-              <div class="tag" data-category="digital">💻 Digital</div>
-            </div>
-            <input type="hidden" id="rewardCategory" value="entertainment" />
-          </div>
-
-          <div class="form-group">
             <label for="rewardDescription">
               <i class="fas fa-align-left"></i> Description
             </label>
@@ -671,6 +625,77 @@
             </button>
             <button type="submit" class="btn-primary">
               <i class="fas fa-save"></i> Add Reward
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Punishment Modal -->
+    <div id="punishmentModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2><i class="fas fa-dumbbell"></i> Add Workout Punishment</h2>
+          <button class="btn-icon modal-close" id="cancelPunishmentBtn">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <form id="punishmentForm" class="modal-form">
+          <div class="form-group">
+            <label for="punishmentName">
+              <i class="fas fa-dumbbell"></i> Workout Name
+            </label>
+            <input
+              type="text"
+              id="punishmentName"
+              required
+              placeholder="e.g., Push-ups, Plank"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="punishmentReps">
+              <i class="fas fa-redo"></i> Repetitions/Time
+            </label>
+            <input
+              type="text"
+              id="punishmentReps"
+              required
+              placeholder="e.g., 20 reps or 1 minute"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="punishmentGemLoss">
+              <i class="fas fa-gem"></i> Gem Loss
+            </label>
+            <input
+              type="number"
+              id="punishmentGemLoss"
+              min="5"
+              max="100"
+              value="10"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="punishmentDifficulty">
+              <i class="fas fa-mountain"></i> Difficulty
+            </label>
+            <select id="punishmentDifficulty">
+              <option value="easy">Easy</option>
+              <option value="medium">Medium</option>
+              <option value="hard">Hard</option>
+            </select>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn-outline" id="cancelPunishmentBtn2">
+              Cancel
+            </button>
+            <button type="submit" class="btn-primary">
+              <i class="fas fa-save"></i> Add Workout
             </button>
           </div>
         </form>

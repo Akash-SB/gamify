@@ -1,4 +1,4 @@
-// Enhanced Habit Tracker with Dark Mode
+// Enhanced Habit Tracker with Dark Mode - FIXED VERSION
 class GamifyLife {
   constructor() {
     this.state = {
@@ -40,13 +40,11 @@ class GamifyLife {
     this.showLoading();
 
     // Initialize with delay for smooth loading
-    await this.sleep(1500);
+    await this.sleep(1000);
 
     this.loadData();
     this.setupEventListeners();
     this.initTheme();
-    this.initParticles();
-    this.setupAnimations();
     this.renderAll();
     this.updateDate();
 
@@ -66,18 +64,24 @@ class GamifyLife {
   }
 
   showLoading() {
-    document.getElementById("loadingScreen").style.display = "flex";
+    const loadingScreen = document.getElementById("loadingScreen");
+    if (loadingScreen) {
+      loadingScreen.style.display = "flex";
+    }
   }
 
   hideLoading() {
-    document.getElementById("loadingScreen").style.opacity = "0";
-    setTimeout(() => {
-      document.getElementById("loadingScreen").style.display = "none";
-    }, 500);
+    const loadingScreen = document.getElementById("loadingScreen");
+    if (loadingScreen) {
+      loadingScreen.style.opacity = "0";
+      setTimeout(() => {
+        loadingScreen.style.display = "none";
+      }, 500);
+    }
   }
 
   initTheme() {
-    const savedTheme = localStorage.getItem("theme") || "light";
+    const savedTheme = localStorage.getItem("gamifyLifeTheme") || "light";
     this.state.settings.darkMode = savedTheme === "dark";
     this.applyTheme();
   }
@@ -85,13 +89,15 @@ class GamifyLife {
   applyTheme() {
     const theme = this.state.settings.darkMode ? "dark" : "light";
     document.documentElement.setAttribute("data-theme", theme);
-    localStorage.setItem("theme", theme);
+    localStorage.setItem("gamifyLifeTheme", theme);
 
     // Update toggle icon
     const icon = document.querySelector("#themeToggle i");
-    icon.className = this.state.settings.darkMode
-      ? "fas fa-sun"
-      : "fas fa-moon";
+    if (icon) {
+      icon.className = this.state.settings.darkMode
+        ? "fas fa-sun"
+        : "fas fa-moon";
+    }
   }
 
   toggleTheme() {
@@ -105,74 +111,6 @@ class GamifyLife {
     }, 300);
   }
 
-  initParticles() {
-    const container = document.getElementById("particles");
-    const particleCount = window.innerWidth < 480 ? 20 : 50;
-
-    for (let i = 0; i < particleCount; i++) {
-      const particle = document.createElement("div");
-      particle.className = "particle";
-
-      // Random properties
-      const size = Math.random() * 4 + 1;
-      const posX = Math.random() * 100;
-      const posY = Math.random() * 100;
-      const duration = Math.random() * 20 + 10;
-      const delay = Math.random() * 5;
-
-      // Apply styles
-      particle.style.cssText = `
-                position: absolute;
-                width: ${size}px;
-                height: ${size}px;
-                background: ${
-                  this.state.settings.darkMode
-                    ? "rgba(167, 139, 250, 0.3)"
-                    : "rgba(139, 92, 246, 0.1)"
-                };
-                border-radius: 50%;
-                left: ${posX}%;
-                top: ${posY}%;
-                animation: float ${duration}s ease-in-out ${delay}s infinite;
-            `;
-
-      container.appendChild(particle);
-    }
-
-    // Add CSS animation
-    const style = document.createElement("style");
-    style.textContent = `
-            @keyframes float {
-                0%, 100% { transform: translate(0, 0) rotate(0deg); }
-                25% { transform: translate(${Math.random() * 20 - 10}px, ${
-      Math.random() * 20 - 10
-    }px) rotate(90deg); }
-                50% { transform: translate(${Math.random() * 30 - 15}px, ${
-      Math.random() * 30 - 15
-    }px) rotate(180deg); }
-                75% { transform: translate(${Math.random() * 20 - 10}px, ${
-      Math.random() * 20 - 10
-    }px) rotate(270deg); }
-            }
-        `;
-    document.head.appendChild(style);
-  }
-
-  setupAnimations() {
-    // Add hover effects
-    document.addEventListener("mouseover", (e) => {
-      if (e.target.matches(".habit-card, .reward-card")) {
-        e.target.style.transform = "translateY(-4px)";
-      }
-    });
-
-    document.addEventListener("mouseout", (e) => {
-      if (e.target.matches(".habit-card, .reward-card")) {
-        e.target.style.transform = "translateY(0)";
-      }
-    });
-  }
-
   loadDefaultData() {
     // Default habits
     this.state.habits = [
@@ -182,7 +120,6 @@ class GamifyLife {
         category: "health",
         difficulty: "easy",
         importance: 4,
-        schedule: "daily",
         created: this.getTodayDate(),
         completedDates: [],
         totalCompletions: 0,
@@ -194,7 +131,6 @@ class GamifyLife {
         category: "fitness",
         difficulty: "medium",
         importance: 5,
-        schedule: "daily",
         created: this.getTodayDate(),
         completedDates: [],
         totalCompletions: 0,
@@ -206,7 +142,6 @@ class GamifyLife {
         category: "learning",
         difficulty: "medium",
         importance: 3,
-        schedule: "daily",
         created: this.getTodayDate(),
         completedDates: [],
         totalCompletions: 0,
@@ -220,29 +155,19 @@ class GamifyLife {
         id: 1,
         name: "Movie Night",
         cost: 100,
-        category: "entertainment",
         description: "Watch your favorite movie with snacks",
       },
       {
         id: 2,
         name: "Coffee Treat",
         cost: 50,
-        category: "food",
         description: "Get a fancy coffee from your favorite café",
       },
       {
         id: 3,
         name: "Game Time",
         cost: 150,
-        category: "entertainment",
         description: "1 hour of guilt-free gaming",
-      },
-      {
-        id: 4,
-        name: "Shopping Spree",
-        cost: 300,
-        category: "shopping",
-        description: "Buy something nice for yourself",
       },
     ];
 
@@ -271,14 +196,6 @@ class GamifyLife {
         gemLoss: 15,
         difficulty: "hard",
         description: "Full body isometric exercise",
-      },
-      {
-        id: 4,
-        name: "Squats",
-        reps: "25 reps",
-        gemLoss: 12,
-        difficulty: "medium",
-        description: "Lower body workout",
       },
     ];
 
@@ -318,13 +235,15 @@ class GamifyLife {
     if (saved) {
       try {
         const data = JSON.parse(saved);
-        this.state = { ...this.state, ...data };
-
-        // Ensure arrays exist
-        this.state.habits = this.state.habits || [];
-        this.state.rewards = this.state.rewards || [];
-        this.state.punishments = this.state.punishments || [];
-        this.state.achievements = this.state.achievements || [];
+        // Merge with default state but keep arrays
+        this.state = {
+          ...this.state,
+          ...data,
+          habits: data.habits || this.state.habits,
+          rewards: data.rewards || this.state.rewards,
+          punishments: data.punishments || this.state.punishments,
+          achievements: data.achievements || this.state.achievements,
+        };
       } catch (e) {
         console.error("Error loading data:", e);
       }
@@ -345,10 +264,10 @@ class GamifyLife {
       month: "long",
       day: "numeric",
     };
-    document.getElementById("currentDate").textContent = now.toLocaleDateString(
-      "en-US",
-      options
-    );
+    const dateElement = document.getElementById("currentDate");
+    if (dateElement) {
+      dateElement.textContent = now.toLocaleDateString("en-US", options);
+    }
   }
 
   renderAll() {
@@ -367,23 +286,26 @@ class GamifyLife {
     );
 
     // Update stats bar
-    document.getElementById(
-      "pendingCount"
-    ).textContent = `${todayHabits.length} pending`;
+    const pendingCount = document.getElementById("pendingCount");
+    if (pendingCount) {
+      pendingCount.textContent = `${todayHabits.length} pending`;
+    }
 
     // Render today's habits
     const todayList = document.getElementById("todayHabitsList");
-    if (todayHabits.length === 0) {
-      todayList.innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-check-circle"></i>
-                    <p>All habits completed for today! 🎉</p>
-                </div>
-            `;
-    } else {
-      todayList.innerHTML = todayHabits
-        .map((habit) => this.createHabitCard(habit, true))
-        .join("");
+    if (todayList) {
+      if (todayHabits.length === 0) {
+        todayList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-check-circle"></i>
+                        <p>All habits completed for today! 🎉</p>
+                    </div>
+                `;
+      } else {
+        todayList.innerHTML = todayHabits
+          .map((habit) => this.createHabitCard(habit, true))
+          .join("");
+      }
     }
 
     // Render achievements preview
@@ -395,6 +317,8 @@ class GamifyLife {
 
   renderHabits(filterCategory = "all", filterDifficulty = "all") {
     const habitsList = document.getElementById("habitsList");
+    if (!habitsList) return;
+
     let filteredHabits = this.state.habits;
 
     if (filterCategory !== "all") {
@@ -504,52 +428,51 @@ class GamifyLife {
     const rewardsList = document.getElementById("rewardsList");
     const availableGems = document.getElementById("availableGems");
 
-    availableGems.textContent = this.state.gems;
+    if (availableGems) {
+      availableGems.textContent = this.state.gems;
+    }
 
-    if (this.state.rewards.length === 0) {
-      rewardsList.innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-gift"></i>
-                    <p>No rewards yet. Add your first reward!</p>
-                </div>
-            `;
-    } else {
-      rewardsList.innerHTML = this.state.rewards
-        .map(
-          (reward) => `
-                <div class="reward-card" data-id="${reward.id}">
-                    <div class="reward-header">
-                        <div class="reward-name">${reward.name}</div>
-                        <div class="reward-cost">
-                            <i class="fas fa-gem"></i>
-                            ${reward.cost}
+    if (rewardsList) {
+      if (this.state.rewards.length === 0) {
+        rewardsList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-gift"></i>
+                        <p>No rewards yet. Add your first reward!</p>
+                    </div>
+                `;
+      } else {
+        rewardsList.innerHTML = this.state.rewards
+          .map(
+            (reward) => `
+                    <div class="reward-card" data-id="${reward.id}">
+                        <div class="reward-header">
+                            <div class="reward-name">${reward.name}</div>
+                            <div class="reward-cost">
+                                <i class="fas fa-gem"></i>
+                                ${reward.cost}
+                            </div>
+                        </div>
+                        
+                        <div class="reward-description">
+                            ${reward.description || "No description"}
+                        </div>
+                        
+                        <div class="reward-actions">
+                            <button class="redeem-btn" 
+                                    onclick="app.redeemReward(${reward.id})"
+                                    ${
+                                      this.state.gems < reward.cost
+                                        ? "disabled"
+                                        : ""
+                                    }>
+                                <i class="fas fa-shopping-cart"></i> Redeem
+                            </button>
                         </div>
                     </div>
-                    
-                    <div class="reward-description">
-                        ${reward.description || "No description"}
-                    </div>
-                    
-                    <div class="reward-actions">
-                        <span class="reward-category">
-                            ${this.getCategoryIcon(reward.category)} ${
-            reward.category
-          }
-                        </span>
-                        <button class="redeem-btn" 
-                                onclick="app.redeemReward(${reward.id})"
-                                ${
-                                  this.state.gems < reward.cost
-                                    ? "disabled"
-                                    : ""
-                                }>
-                            <i class="fas fa-shopping-cart"></i> Redeem
-                        </button>
-                    </div>
-                </div>
-            `
-        )
-        .join("");
+                `
+          )
+          .join("");
+      }
     }
   }
 
@@ -561,83 +484,100 @@ class GamifyLife {
     const totalGemsLost = document.getElementById("totalGemsLost");
 
     // Update stats
-    pendingCount.textContent = `${
-      this.state.pendingWorkouts.filter((w) => !w.completed).length
-    } Pending`;
-    completedWorkouts.textContent = this.state.stats.workoutsCompleted;
-    totalGemsLost.textContent = this.state.stats.totalGemsLost;
+    if (pendingCount) {
+      pendingCount.textContent = `${
+        this.state.pendingWorkouts.filter((w) => !w.completed).length
+      } Pending`;
+    }
+    if (completedWorkouts) {
+      completedWorkouts.textContent = this.state.stats.workoutsCompleted;
+    }
+    if (totalGemsLost) {
+      totalGemsLost.textContent = this.state.stats.totalGemsLost;
+    }
 
     // Render pending workouts
-    const activeWorkouts = this.state.pendingWorkouts.filter(
-      (w) => !w.completed
-    );
-    if (activeWorkouts.length === 0) {
-      pendingWorkouts.innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-check-circle"></i>
-                    <p>No pending workouts! Great job!</p>
-                </div>
-            `;
-    } else {
-      pendingWorkouts.innerHTML = activeWorkouts
-        .map(
-          (workout) => `
-                <div class="challenge-card" data-id="${workout.id}">
-                    <div>
-                        <h4>${workout.name}</h4>
-                        <p style="color: var(--danger-color); font-weight: 600; margin-top: 4px;">
-                            <i class="fas fa-fire"></i> ${workout.reps}
-                        </p>
-                        <small style="color: var(--text-secondary);">
-                            Gem penalty: -${workout.gemLoss}
-                        </small>
+    if (pendingWorkouts) {
+      const activeWorkouts = this.state.pendingWorkouts.filter(
+        (w) => !w.completed
+      );
+      if (activeWorkouts.length === 0) {
+        pendingWorkouts.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-check-circle"></i>
+                        <p>No pending workouts! Great job!</p>
                     </div>
-                    <button class="btn-primary" onclick="app.completeWorkout(${workout.id})">
-                        <i class="fas fa-check"></i> Complete
-                    </button>
+                `;
+      } else {
+        pendingWorkouts.innerHTML = activeWorkouts
+          .map(
+            (workout) => `
+                    <div class="challenge-card" data-id="${workout.id}">
+                        <div>
+                            <h4>${workout.name}</h4>
+                            <p style="color: var(--danger-color); font-weight: 600; margin-top: 4px;">
+                                <i class="fas fa-fire"></i> ${workout.reps}
+                            </p>
+                            <small style="color: var(--text-secondary);">
+                                Gem penalty: -${workout.gemLoss}
+                            </small>
+                        </div>
+                        <button class="btn-primary" onclick="app.completeWorkout(${workout.id})">
+                            <i class="fas fa-check"></i> Complete
+                        </button>
+                    </div>
+                `
+          )
+          .join("");
+      }
+    }
+
+    // Render workout library
+    if (punishmentsList) {
+      punishmentsList.innerHTML = this.state.punishments
+        .map(
+          (punishment) => `
+                <div class="workout-card">
+                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                        <div>
+                            <h4 style="margin-bottom: 4px;">${
+                              punishment.name
+                            }</h4>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem;">
+                                ${punishment.description || ""}
+                            </p>
+                        </div>
+                        <span class="badge ${punishment.difficulty}">
+                            ${punishment.difficulty}
+                        </span>
+                    </div>
+                    <div style="margin-top: 12px; display: flex; justify-content: space-between; align-items: center;">
+                        <span style="color: var(--danger-color); font-weight: 600;">
+                            <i class="fas fa-gem"></i> -${punishment.gemLoss}
+                        </span>
+                        <span style="color: var(--text-secondary); font-size: 0.9rem;">
+                            <i class="fas fa-dumbbell"></i> ${punishment.reps}
+                        </span>
+                    </div>
                 </div>
             `
         )
         .join("");
     }
-
-    // Render workout library
-    punishmentsList.innerHTML = this.state.punishments
-      .map(
-        (punishment) => `
-            <div class="workout-card">
-                <div style="display: flex; justify-content: space-between; align-items: start;">
-                    <div>
-                        <h4 style="margin-bottom: 4px;">${punishment.name}</h4>
-                        <p style="color: var(--text-secondary); font-size: 0.9rem;">
-                            ${punishment.description || ""}
-                        </p>
-                    </div>
-                    <span class="badge ${punishment.difficulty}">
-                        ${punishment.difficulty}
-                    </span>
-                </div>
-                <div style="margin-top: 12px; display: flex; justify-content: space-between; align-items: center;">
-                    <span style="color: var(--danger-color); font-weight: 600;">
-                        <i class="fas fa-gem"></i> -${punishment.gemLoss}
-                    </span>
-                    <span style="color: var(--text-secondary); font-size: 0.9rem;">
-                        <i class="fas fa-dumbbell"></i> ${punishment.reps}
-                    </span>
-                </div>
-            </div>
-        `
-      )
-      .join("");
   }
 
   renderProfile() {
     // Update user info
-    document.getElementById("avatarInitial").textContent =
-      this.state.user.name.charAt(0);
-    document.getElementById("userName").textContent = this.state.user.name;
-    document.getElementById("userTitle").textContent = this.state.user.title;
-    document.getElementById("profileLevel").textContent = this.state.level;
+    const avatarInitial = document.getElementById("avatarInitial");
+    const userName = document.getElementById("userName");
+    const userTitle = document.getElementById("userTitle");
+    const profileLevel = document.getElementById("profileLevel");
+
+    if (avatarInitial)
+      avatarInitial.textContent = this.state.user.name.charAt(0);
+    if (userName) userName.textContent = this.state.user.name;
+    if (userTitle) userTitle.textContent = this.state.user.title;
+    if (profileLevel) profileLevel.textContent = this.state.level;
 
     // Update stats
     const totalHabits = this.state.habits.length;
@@ -648,32 +588,42 @@ class GamifyLife {
               (this.state.stats.totalCompletions +
                 this.state.stats.totalFails)) *
               100
-          )
+          ) || 0
         : 0;
 
-    document.getElementById(
-      "completionRate"
-    ).style.width = `${completionRate}%`;
-    document.querySelector(
+    const completionRateBar = document.getElementById("completionRate");
+    const completionRateText = document.querySelector(
       "#completionRate + .stat-value"
-    ).textContent = `${completionRate}%`;
-    document.getElementById("totalGemsEarned").textContent =
-      this.state.stats.totalGemsEarned;
-    document.getElementById("totalCompletions").textContent =
-      this.state.stats.totalCompletions;
-    document.getElementById("totalFails").textContent =
-      this.state.stats.totalFails;
-    document.getElementById("currentStreakStats").textContent =
-      this.state.streak;
-    document.getElementById("achievementsCount").textContent =
-      this.state.achievements.filter((a) => a.unlocked).length;
+    );
+    const totalGemsEarned = document.getElementById("totalGemsEarned");
+    const totalCompletions = document.getElementById("totalCompletions");
+    const totalFails = document.getElementById("totalFails");
+    const currentStreakStats = document.getElementById("currentStreakStats");
+    const achievementsCount = document.getElementById("achievementsCount");
 
-    // Render chart
+    if (completionRateBar) completionRateBar.style.width = `${completionRate}%`;
+    if (completionRateText)
+      completionRateText.textContent = `${completionRate}%`;
+    if (totalGemsEarned)
+      totalGemsEarned.textContent = this.state.stats.totalGemsEarned;
+    if (totalCompletions)
+      totalCompletions.textContent = this.state.stats.totalCompletions;
+    if (totalFails) totalFails.textContent = this.state.stats.totalFails;
+    if (currentStreakStats) currentStreakStats.textContent = this.state.streak;
+    if (achievementsCount)
+      achievementsCount.textContent = this.state.achievements.filter(
+        (a) => a.unlocked
+      ).length;
+
+    // Render chart if canvas exists
     this.renderProgressChart();
   }
 
   renderProgressChart() {
-    const ctx = document.getElementById("progressChart").getContext("2d");
+    const canvas = document.getElementById("progressChart");
+    if (!canvas) return;
+
+    const ctx = canvas.getContext("2d");
     const last7Days = this.getLast7Days();
 
     const data = {
@@ -698,7 +648,12 @@ class GamifyLife {
       ],
     };
 
-    const config = {
+    // Destroy existing chart if it exists
+    if (this.chart) {
+      this.chart.destroy();
+    }
+
+    this.chart = new Chart(ctx, {
       type: "line",
       data: data,
       options: {
@@ -722,57 +677,59 @@ class GamifyLife {
           },
         },
       },
-    };
-
-    // Destroy existing chart if it exists
-    if (this.chart) {
-      this.chart.destroy();
-    }
-
-    this.chart = new Chart(ctx, config);
+    });
   }
 
   renderAchievementsPreview() {
     const unlocked = this.state.achievements.filter((a) => a.unlocked);
     const achievementsList = document.getElementById("achievementsList");
 
-    if (unlocked.length === 0) {
-      achievementsList.innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-medal"></i>
-                    <p>Complete habits to unlock achievements!</p>
-                </div>
-            `;
-    } else {
-      achievementsList.innerHTML = unlocked
-        .slice(-3)
-        .map(
-          (achievement) => `
-                <div class="achievement-badge">
-                    <div class="achievement-icon">
-                        <i class="${achievement.icon}"></i>
+    if (achievementsList) {
+      if (unlocked.length === 0) {
+        achievementsList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-medal"></i>
+                        <p>Complete habits to unlock achievements!</p>
                     </div>
-                    <div class="achievement-info">
-                        <strong>${achievement.name}</strong>
-                        <small>${achievement.description}</small>
+                `;
+      } else {
+        achievementsList.innerHTML = unlocked
+          .slice(-3)
+          .map(
+            (achievement) => `
+                    <div class="achievement-badge">
+                        <div class="achievement-icon">
+                            <i class="${achievement.icon}"></i>
+                        </div>
+                        <div class="achievement-info">
+                            <strong>${achievement.name}</strong>
+                            <small>${achievement.description}</small>
+                        </div>
                     </div>
-                </div>
-            `
-        )
-        .join("");
+                `
+          )
+          .join("");
+      }
     }
   }
 
   updateStatsBar() {
-    document.getElementById("totalGems").textContent = this.state.gems;
-    document.getElementById("currentStreak").textContent = this.state.streak;
-    document.getElementById("todayProgress").textContent = `${
-      this.state.habits.filter((h) =>
+    const totalGems = document.getElementById("totalGems");
+    const currentStreak = document.getElementById("currentStreak");
+    const todayProgress = document.getElementById("todayProgress");
+    const userLevel = document.getElementById("userLevel");
+    const xpCount = document.getElementById("xpCount");
+
+    if (totalGems) totalGems.textContent = this.state.gems;
+    if (currentStreak) currentStreak.textContent = this.state.streak;
+    if (todayProgress) {
+      const completedToday = this.state.habits.filter((h) =>
         h.completedDates.includes(this.getTodayDate())
-      ).length
-    }/${this.state.habits.length}`;
-    document.getElementById("userLevel").textContent = this.state.level;
-    document.getElementById("xpCount").textContent = this.state.xp;
+      ).length;
+      todayProgress.textContent = `${completedToday}/${this.state.habits.length}`;
+    }
+    if (userLevel) userLevel.textContent = this.state.level;
+    if (xpCount) xpCount.textContent = this.state.xp;
   }
 
   updateMotivation() {
@@ -788,7 +745,10 @@ class GamifyLife {
     ];
 
     const randomMessage = messages[Math.floor(Math.random() * messages.length)];
-    document.getElementById("motivationText").textContent = randomMessage;
+    const motivationText = document.getElementById("motivationText");
+    if (motivationText) {
+      motivationText.textContent = randomMessage;
+    }
   }
 
   getTodayDate() {
@@ -803,17 +763,6 @@ class GamifyLife {
       dates.push(date.toISOString().split("T")[0]);
     }
     return dates;
-  }
-
-  getCategoryIcon(category) {
-    const icons = {
-      entertainment: "🎬",
-      food: "🍔",
-      shopping: "🛍️",
-      experience: "🎯",
-      digital: "💻",
-    };
-    return icons[category] || "🎁";
   }
 
   // Habit Actions
@@ -863,12 +812,7 @@ class GamifyLife {
     this.saveData();
     this.renderAll();
 
-    // Animation
-    this.animateGemEarned(gemsEarned);
     this.showToast(`+${gemsEarned} gems earned!`, "success");
-
-    // Celebration effect
-    this.createConfetti();
   }
 
   failHabit(habitId) {
@@ -967,9 +911,6 @@ class GamifyLife {
     this.renderAll();
 
     this.showToast(`Enjoy your reward: ${reward.name}!`, "success");
-
-    // Show celebration
-    this.createConfetti();
   }
 
   updateStreak(success) {
@@ -1022,8 +963,6 @@ class GamifyLife {
       ];
       this.state.user.title =
         titles[Math.min(this.state.level - 1, titles.length - 1)];
-
-      this.createConfetti();
     }
   }
 
@@ -1055,73 +994,24 @@ class GamifyLife {
 
   showAchievement(achievement) {
     const toast = document.getElementById("achievementToast");
+    if (!toast) return;
+
     const title = toast.querySelector(".toast-title");
     const message = toast.querySelector(".toast-message");
 
-    title.textContent = achievement.name;
-    message.textContent = `Unlocked: ${achievement.description} (+${achievement.reward} gems)`;
+    if (title) title.textContent = achievement.name;
+    if (message)
+      message.textContent = `Unlocked: ${achievement.description} (+${achievement.reward} gems)`;
 
     toast.classList.add("show");
 
     setTimeout(() => {
       toast.classList.remove("show");
     }, 5000);
-
-    this.createConfetti();
-  }
-
-  // Animations
-  animateGemEarned(gems) {
-    const gemDisplay = document.querySelector(".gem-display");
-    const animation = document.createElement("div");
-    animation.className = "gem-animation";
-    animation.textContent = `+${gems}`;
-    animation.style.cssText = `
-            position: absolute;
-            background: var(--gradient-primary);
-            color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-weight: bold;
-            z-index: 1000;
-            animation: floatUp 1s ease-out forwards;
-        `;
-
-    gemDisplay.parentNode.appendChild(animation);
-
-    setTimeout(() => animation.remove(), 1000);
-  }
-
-  createConfetti() {
-    const colors = ["#8B5CF6", "#F59E0B", "#10B981", "#3B82F6", "#EF4444"];
-
-    for (let i = 0; i < 50; i++) {
-      const confetti = document.createElement("div");
-      confetti.className = "confetti";
-      confetti.style.cssText = `
-                position: fixed;
-                width: 10px;
-                height: 10px;
-                background: ${
-                  colors[Math.floor(Math.random() * colors.length)]
-                };
-                top: -20px;
-                left: ${Math.random() * 100}%;
-                border-radius: ${Math.random() > 0.5 ? "50%" : "0"};
-                z-index: 9999;
-                pointer-events: none;
-                animation: confettiFall ${
-                  Math.random() * 3 + 2
-                }s linear forwards;
-            `;
-
-      document.body.appendChild(confetti);
-
-      setTimeout(() => confetti.remove(), 5000);
-    }
   }
 
   showToast(message, type = "success") {
+    // Create toast element
     const toast = document.createElement("div");
     toast.className = `toast ${type}`;
     toast.innerHTML = `
@@ -1149,114 +1039,200 @@ class GamifyLife {
     // Remove after delay
     setTimeout(() => {
       toast.classList.remove("show");
-      setTimeout(() => toast.remove(), 300);
+      setTimeout(() => {
+        if (toast.parentNode) {
+          toast.parentNode.removeChild(toast);
+        }
+      }, 300);
     }, 3000);
   }
 
-  // Event Listeners
+  // Event Listeners - FIXED WITH NULL CHECKS
   setupEventListeners() {
-    // Navigation
-    document.querySelectorAll(".nav-btn, .menu-item").forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        e.preventDefault();
-        const view = e.currentTarget.dataset.view;
-        if (view) this.switchView(view);
+    // Navigation - Check if elements exist
+    const navButtons = document.querySelectorAll(
+      ".nav-btn, .menu-item[data-view]"
+    );
+    if (navButtons.length > 0) {
+      navButtons.forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          e.preventDefault();
+          const view = e.currentTarget.dataset.view;
+          if (view) this.switchView(view);
 
-        // Update active state for nav buttons
-        if (e.currentTarget.classList.contains("nav-btn")) {
+          // Update active state for nav buttons
+          if (e.currentTarget.classList.contains("nav-btn")) {
+            document
+              .querySelectorAll(".nav-btn")
+              .forEach((b) => b.classList.remove("active"));
+            e.currentTarget.classList.add("active");
+          }
+
+          // Close side menu
+          this.closeSideMenu();
+        });
+      });
+    }
+
+    // Theme toggle - Check if exists
+    const themeToggle = document.getElementById("themeToggle");
+    if (themeToggle) {
+      themeToggle.addEventListener("click", () => this.toggleTheme());
+    }
+
+    // Menu toggle - Check if exists
+    const menuBtn = document.getElementById("menuBtn");
+    if (menuBtn) {
+      menuBtn.addEventListener("click", () => this.toggleSideMenu());
+    }
+
+    const menuCloseBtn = document.getElementById("menuCloseBtn");
+    if (menuCloseBtn) {
+      menuCloseBtn.addEventListener("click", () => this.closeSideMenu());
+    }
+
+    // Category filter - Check if exists
+    const categoryBtns = document.querySelectorAll(".category-btn");
+    if (categoryBtns.length > 0) {
+      categoryBtns.forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          const category = e.currentTarget.dataset.category;
           document
-            .querySelectorAll(".nav-btn")
+            .querySelectorAll(".category-btn")
             .forEach((b) => b.classList.remove("active"));
           e.currentTarget.classList.add("active");
-        }
-
-        // Close side menu
-        this.closeSideMenu();
+          this.renderHabits(category);
+        });
       });
-    });
+    }
 
-    // Theme toggle
-    document
-      .getElementById("themeToggle")
-      .addEventListener("click", () => this.toggleTheme());
-
-    // Menu toggle
-    document
-      .getElementById("menuBtn")
-      .addEventListener("click", () => this.toggleSideMenu());
-    document
-      .getElementById("menuCloseBtn")
-      .addEventListener("click", () => this.closeSideMenu());
-
-    // Category filter
-    document.querySelectorAll(".category-btn").forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        const category = e.currentTarget.dataset.category;
-        document
-          .querySelectorAll(".category-btn")
-          .forEach((b) => b.classList.remove("active"));
-        e.currentTarget.classList.add("active");
-        this.renderHabits(category);
+    // Difficulty filter - Check if exists
+    const difficultyBtns = document.querySelectorAll(".difficulty-btn");
+    if (difficultyBtns.length > 0) {
+      difficultyBtns.forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          const difficulty = e.currentTarget.dataset.difficulty;
+          document
+            .querySelectorAll(".difficulty-btn")
+            .forEach((b) => b.classList.remove("active"));
+          e.currentTarget.classList.add("active");
+          this.renderHabits("all", difficulty);
+        });
       });
-    });
+    }
 
-    // Difficulty filter
-    document.querySelectorAll(".difficulty-btn").forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        const difficulty = e.currentTarget.dataset.difficulty;
-        document
-          .querySelectorAll(".difficulty-btn")
-          .forEach((b) => b.classList.remove("active"));
-        e.currentTarget.classList.add("active");
-        this.renderHabits("all", difficulty);
-      });
-    });
+    // Add buttons - Check if exists
+    const addHabitBtn = document.getElementById("addHabitBtn");
+    if (addHabitBtn) {
+      addHabitBtn.addEventListener("click", () => this.showHabitModal());
+    }
 
-    // Modals
-    document
-      .getElementById("addHabitBtn")
-      .addEventListener("click", () => this.showHabitModal());
-    document
-      .getElementById("addRewardBtn")
-      .addEventListener("click", () => this.showRewardModal());
-    document
-      .getElementById("addPunishmentBtn")
-      .addEventListener("click", () => this.showPunishmentModal());
-    document
-      .getElementById("quickAddBtn")
-      .addEventListener("click", () => this.showHabitModal());
+    const addRewardBtn = document.getElementById("addRewardBtn");
+    if (addRewardBtn) {
+      addRewardBtn.addEventListener("click", () => this.showRewardModal());
+    }
 
-    // Form submissions
-    document
-      .getElementById("habitForm")
-      .addEventListener("submit", (e) => this.handleAddHabit(e));
-    document
-      .getElementById("rewardForm")
-      .addEventListener("submit", (e) => this.handleAddReward(e));
-    document
-      .getElementById("punishmentForm")
-      .addEventListener("submit", (e) => this.handleAddPunishment(e));
+    const addPunishmentBtn = document.getElementById("addPunishmentBtn");
+    if (addPunishmentBtn) {
+      addPunishmentBtn.addEventListener("click", () =>
+        this.showPunishmentModal()
+      );
+    }
 
-    // Close modals
-    document.querySelectorAll(".modal-close, .btn-outline").forEach((btn) => {
-      btn.addEventListener("click", (e) => {
+    const quickAddBtn = document.getElementById("quickAddBtn");
+    if (quickAddBtn) {
+      quickAddBtn.addEventListener("click", () => this.showHabitModal());
+    }
+
+    // Form submissions - Check if forms exist
+    const habitForm = document.getElementById("habitForm");
+    if (habitForm) {
+      habitForm.addEventListener("submit", (e) => {
         e.preventDefault();
-        const modal = e.target.closest(".modal");
-        if (modal) modal.classList.remove("active");
+        this.handleAddHabit(e);
       });
-    });
+    }
 
-    // Close modals on outside click
-    document.querySelectorAll(".modal").forEach((modal) => {
-      modal.addEventListener("click", (e) => {
-        if (e.target === modal) modal.classList.remove("active");
+    const rewardForm = document.getElementById("rewardForm");
+    if (rewardForm) {
+      rewardForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        this.handleAddReward(e);
       });
-    });
+    }
 
-    // Refresh motivation
-    document
-      .getElementById("refreshMotivation")
-      .addEventListener("click", () => this.updateMotivation());
+    const punishmentForm = document.getElementById("punishmentForm");
+    if (punishmentForm) {
+      punishmentForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        this.handleAddPunishment(e);
+      });
+    }
+
+    // Close modals - Check if elements exist
+    const closeButtons = document.querySelectorAll(
+      '.modal-close, .btn-outline[id*="cancel"]'
+    );
+    if (closeButtons.length > 0) {
+      closeButtons.forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          e.preventDefault();
+          const modal = e.target.closest(".modal");
+          if (modal) modal.classList.remove("active");
+        });
+      });
+    }
+
+    // Close modals on outside click - Check if modals exist
+    const modals = document.querySelectorAll(".modal");
+    if (modals.length > 0) {
+      modals.forEach((modal) => {
+        modal.addEventListener("click", (e) => {
+          if (e.target === modal) modal.classList.remove("active");
+        });
+      });
+    }
+
+    // Refresh motivation - Check if exists
+    const refreshBtn = document.getElementById("refreshMotivation");
+    if (refreshBtn) {
+      refreshBtn.addEventListener("click", () => this.updateMotivation());
+    }
+
+    // Importance stars - Check if exists
+    const importanceStars = document.querySelectorAll("#importanceStars .star");
+    if (importanceStars.length > 0) {
+      importanceStars.forEach((star) => {
+        star.addEventListener("click", () => {
+          const value = star.dataset.value;
+          document.getElementById("habitImportance").value = value;
+
+          // Update star display
+          importanceStars.forEach((s, index) => {
+            if (index < value) {
+              s.textContent = "★";
+              s.style.color = "#F59E0B";
+            } else {
+              s.textContent = "☆";
+              s.style.color = "";
+            }
+          });
+        });
+      });
+    }
+
+    // Reward cost range - Check if exists
+    const rewardCostRange = document.getElementById("rewardCostRange");
+    const rewardCostDisplay = document.getElementById("rewardCostDisplay");
+    const rewardCost = document.getElementById("rewardCost");
+
+    if (rewardCostRange && rewardCostDisplay && rewardCost) {
+      rewardCostRange.addEventListener("input", (e) => {
+        const value = e.target.value;
+        rewardCostDisplay.textContent = value;
+        rewardCost.value = value;
+      });
+    }
 
     // Add keyboard shortcuts
     document.addEventListener("keydown", (e) => {
@@ -1268,34 +1244,89 @@ class GamifyLife {
       }
     });
 
-    // Add CSS for animations
+    // Add animation styles
     this.addAnimationStyles();
   }
 
   addAnimationStyles() {
-    const styles = `
-            @keyframes floatUp {
-                0% { transform: translateY(0); opacity: 1; }
-                100% { transform: translateY(-50px); opacity: 0; }
-            }
-            
-            @keyframes confettiFall {
-                0% { transform: translateY(0) rotate(0deg); }
-                100% { transform: translateY(100vh) rotate(720deg); }
-            }
-            
-            .gem-animation {
-                animation: floatUp 1s ease-out forwards;
-            }
-            
-            .confetti {
-                animation: confettiFall 3s linear forwards;
-            }
-        `;
+    // Only add if not already added
+    if (!document.querySelector("#animation-styles")) {
+      const styles = `
+                @keyframes floatUp {
+                    0% { transform: translateY(0); opacity: 1; }
+                    100% { transform: translateY(-50px); opacity: 0; }
+                }
+                
+                @keyframes confettiFall {
+                    0% { transform: translateY(-100px) rotate(0deg); }
+                    100% { transform: translateY(100vh) rotate(720deg); }
+                }
+                
+                .gem-animation {
+                    animation: floatUp 1s ease-out forwards;
+                }
+                
+                .confetti {
+                    animation: confettiFall 3s linear forwards;
+                }
+                
+                .toast {
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: var(--gradient-primary);
+                    color: white;
+                    padding: 16px 24px;
+                    border-radius: var(--radius-lg);
+                    box-shadow: var(--shadow-xl);
+                    display: flex;
+                    align-items: center;
+                    gap: 16px;
+                    z-index: 1100;
+                    transform: translateX(150%);
+                    transition: transform var(--transition);
+                }
+                
+                .toast.show {
+                    transform: translateX(0);
+                }
+                
+                .toast.error {
+                    background: var(--gradient-danger);
+                }
+                
+                .toast.warning {
+                    background: var(--gradient-secondary);
+                }
+                
+                .toast.success {
+                    background: var(--gradient-success);
+                }
+                
+                .toast-icon {
+                    font-size: 1.5rem;
+                }
+                
+                .toast-content {
+                    flex: 1;
+                }
+                
+                .toast-title {
+                    font-weight: 700;
+                    margin-bottom: 4px;
+                }
+                
+                .toast-message {
+                    font-size: 0.9rem;
+                    opacity: 0.9;
+                }
+            `;
 
-    const styleSheet = document.createElement("style");
-    styleSheet.textContent = styles;
-    document.head.appendChild(styleSheet);
+      const styleSheet = document.createElement("style");
+      styleSheet.id = "animation-styles";
+      styleSheet.textContent = styles;
+      document.head.appendChild(styleSheet);
+    }
   }
 
   switchView(viewName) {
@@ -1313,38 +1344,101 @@ class GamifyLife {
   }
 
   toggleSideMenu() {
-    document.getElementById("sideMenu").classList.toggle("active");
+    const sideMenu = document.getElementById("sideMenu");
+    if (sideMenu) {
+      sideMenu.classList.toggle("active");
+    }
   }
 
   closeSideMenu() {
-    document.getElementById("sideMenu").classList.remove("active");
+    const sideMenu = document.getElementById("sideMenu");
+    if (sideMenu) {
+      sideMenu.classList.remove("active");
+    }
   }
 
   showHabitModal() {
-    document.getElementById("habitModal").classList.add("active");
-    document.getElementById("habitName").focus();
+    const modal = document.getElementById("habitModal");
+    if (modal) {
+      modal.classList.add("active");
+      const habitName = document.getElementById("habitName");
+      if (habitName) habitName.focus();
+
+      // Reset form
+      const habitForm = document.getElementById("habitForm");
+      if (habitForm) habitForm.reset();
+
+      // Set default importance
+      const importanceStars = document.querySelectorAll(
+        "#importanceStars .star"
+      );
+      if (importanceStars.length > 0) {
+        importanceStars.forEach((star, index) => {
+          if (index < 3) {
+            star.textContent = "★";
+            star.style.color = "#F59E0B";
+          } else {
+            star.textContent = "☆";
+            star.style.color = "";
+          }
+        });
+      }
+      const habitImportance = document.getElementById("habitImportance");
+      if (habitImportance) habitImportance.value = 3;
+    }
   }
 
   showRewardModal() {
-    document.getElementById("rewardModal").classList.add("active");
+    const modal = document.getElementById("rewardModal");
+    if (modal) {
+      modal.classList.add("active");
+
+      // Reset form
+      const rewardForm = document.getElementById("rewardForm");
+      if (rewardForm) rewardForm.reset();
+
+      // Reset cost display
+      const rewardCostDisplay = document.getElementById("rewardCostDisplay");
+      const rewardCost = document.getElementById("rewardCost");
+      const rewardCostRange = document.getElementById("rewardCostRange");
+
+      if (rewardCostDisplay) rewardCostDisplay.textContent = "50";
+      if (rewardCost) rewardCost.value = 50;
+      if (rewardCostRange) rewardCostRange.value = 50;
+    }
   }
 
   showPunishmentModal() {
-    document.getElementById("punishmentModal").classList.add("active");
+    const modal = document.getElementById("punishmentModal");
+    if (modal) {
+      modal.classList.add("active");
+
+      // Reset form
+      const punishmentForm = document.getElementById("punishmentForm");
+      if (punishmentForm) punishmentForm.reset();
+    }
   }
 
   handleAddHabit(e) {
     e.preventDefault();
 
+    // Check if form elements exist
+    const habitName = document.getElementById("habitName");
+    const habitCategory = document.getElementById("habitCategory");
+    const habitDifficulty = document.getElementById("habitDifficulty");
+    const habitImportance = document.getElementById("habitImportance");
+
+    if (!habitName || !habitCategory || !habitDifficulty || !habitImportance) {
+      console.error("Form elements not found!");
+      return;
+    }
+
     const habit = {
       id: Date.now(),
-      name: document.getElementById("habitName").value,
-      category: document.getElementById("habitCategory").value.split(" ")[0],
-      difficulty: document
-        .getElementById("habitDifficulty")
-        .value.split(" ")[0],
-      importance: parseInt(document.getElementById("habitImportance").value),
-      schedule: document.getElementById("habitSchedule").value,
+      name: habitName.value,
+      category: habitCategory.value,
+      difficulty: habitDifficulty.value,
+      importance: parseInt(habitImportance.value) || 3,
       created: this.getTodayDate(),
       completedDates: [],
       totalCompletions: 0,
@@ -1356,18 +1450,26 @@ class GamifyLife {
     this.renderAll();
     this.hideModal("habitModal");
 
-    this.showToast(`Habit "${habit.name}" added!`, "success");
+    this.showToast(`Added habit: "${habit.name}"`, "success");
   }
 
   handleAddReward(e) {
     e.preventDefault();
 
+    const rewardName = document.getElementById("rewardName");
+    const rewardCost = document.getElementById("rewardCost");
+    const rewardDescription = document.getElementById("rewardDescription");
+
+    if (!rewardName || !rewardCost) {
+      console.error("Reward form elements not found!");
+      return;
+    }
+
     const reward = {
       id: Date.now(),
-      name: document.getElementById("rewardName").value,
-      cost: parseInt(document.getElementById("rewardCost").value),
-      category: document.getElementById("rewardCategory").value,
-      description: document.getElementById("rewardDescription").value,
+      name: rewardName.value,
+      cost: parseInt(rewardCost.value) || 50,
+      description: rewardDescription?.value || "",
     };
 
     this.state.rewards.push(reward);
@@ -1375,19 +1477,30 @@ class GamifyLife {
     this.renderRewards();
     this.hideModal("rewardModal");
 
-    this.showToast(`Reward "${reward.name}" added!`, "success");
+    this.showToast(`Added reward: "${reward.name}"`, "success");
   }
 
   handleAddPunishment(e) {
     e.preventDefault();
 
+    const punishmentName = document.getElementById("punishmentName");
+    const punishmentReps = document.getElementById("punishmentReps");
+    const punishmentGemLoss = document.getElementById("punishmentGemLoss");
+    const punishmentDifficulty = document.getElementById(
+      "punishmentDifficulty"
+    );
+
+    if (!punishmentName || !punishmentReps || !punishmentGemLoss) {
+      console.error("Punishment form elements not found!");
+      return;
+    }
+
     const punishment = {
       id: Date.now(),
-      name: document.getElementById("punishmentName").value,
-      reps: document.getElementById("punishmentReps").value,
-      gemLoss: parseInt(document.getElementById("punishmentGemLoss").value),
-      difficulty: document.getElementById("punishmentDifficulty").value,
-      description: "",
+      name: punishmentName.value,
+      reps: punishmentReps.value,
+      gemLoss: parseInt(punishmentGemLoss.value) || 10,
+      difficulty: punishmentDifficulty?.value || "medium",
     };
 
     this.state.punishments.push(punishment);
@@ -1395,51 +1508,60 @@ class GamifyLife {
     this.renderPunishments();
     this.hideModal("punishmentModal");
 
-    this.showToast(`Workout "${punishment.name}" added!`, "success");
+    this.showToast(`Added workout: "${punishment.name}"`, "success");
   }
 
   hideModal(modalId) {
-    document.getElementById(modalId).classList.remove("active");
+    const modal = document.getElementById(modalId);
+    if (modal) {
+      modal.classList.remove("active");
+    }
   }
 }
 
-// Initialize app
+// Initialize app with error handling
 let app;
 
 document.addEventListener("DOMContentLoaded", () => {
-  app = new GamifyLife();
-  window.app = app;
-});
-
-// Add to homescreen prompt
-window.addEventListener("beforeinstallprompt", (e) => {
-  e.preventDefault();
-  window.deferredPrompt = e;
-
-  // Show install button
-  const installBtn = document.createElement("button");
-  installBtn.textContent = "Install App";
-  installBtn.className = "btn-primary";
-  installBtn.style.cssText = `
-        position: fixed;
-        bottom: 100px;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 1000;
-    `;
-
-  installBtn.addEventListener("click", async () => {
-    if (!window.deferredPrompt) return;
-
-    window.deferredPrompt.prompt();
-    const { outcome } = await window.deferredPrompt.userChoice;
-
-    if (outcome === "accepted") {
-      installBtn.remove();
-    }
-
-    window.deferredPrompt = null;
-  });
-
-  document.body.appendChild(installBtn);
+  try {
+    app = new GamifyLife();
+    window.app = app;
+    console.log("GamifyLife initialized successfully!");
+  } catch (error) {
+    console.error("Error initializing app:", error);
+    // Show user-friendly error message
+    const errorMsg = document.createElement("div");
+    errorMsg.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-align: center;
+            z-index: 9999;
+            max-width: 300px;
+            border: 2px solid #EF4444;
+        `;
+    errorMsg.innerHTML = `
+            <h3 style="color: #EF4444; margin-bottom: 10px;">Error Loading App</h3>
+            <p style="color: #666; margin-bottom: 20px;">There was an error initializing the application. Please refresh the page.</p>
+            <button onclick="location.reload()" style="
+                background: linear-gradient(135deg, #8B5CF6, #6366F1);
+                color: white;
+                border: none;
+                padding: 12px 24px;
+                border-radius: 8px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: transform 0.2s;
+            " onmouseover="this.style.transform='scale(1.05)'" 
+            onmouseout="this.style.transform='scale(1)'">
+                Refresh Page
+            </button>
+        `;
+    document.body.appendChild(errorMsg);
+  }
 });
