@@ -1673,6 +1673,7 @@ input:checked + .slider:before {
   display: grid;
   gap: 12px;
   margin-bottom: 24px;
+  margin-top: 12px;
 }
 
 .challenge-card {
@@ -1706,6 +1707,7 @@ input:checked + .slider:before {
 .workout-grid {
   display: grid;
   gap: 12px;
+  margin-top: 12px;
 }
 
 .workout-card {
